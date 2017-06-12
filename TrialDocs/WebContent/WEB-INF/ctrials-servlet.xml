@@ -8,7 +8,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
 
-	<context:component-scan base-package="org.trialdocs"></context:component-scan>
+	<context:component-scan base-package="org.trialdocs.controllers"></context:component-scan>
 	<mvc:annotation-driven></mvc:annotation-driven>
 	
 	<bean id="jspViewResolver"

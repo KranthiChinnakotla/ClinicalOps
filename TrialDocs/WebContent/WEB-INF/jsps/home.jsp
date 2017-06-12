@@ -21,7 +21,7 @@
 </head>
 <body>
 	<div class="col-md-4 col-md-offset-4">
-		<form class="form-horizontal" action='' method="POST">
+		<form class="form-horizontal" action='${pageContext.request.contextPath}/usercreated' method="POST">
 			<fieldset>
 				<div id="legend">
 					<legend class="">Register</legend>
@@ -32,8 +32,7 @@
 					<div class="controls">
 						<input type="text" id="username" name="username" placeholder=""
 							class="input-xlarge">
-						<p class="help-block">Username can contain any letters or
-							numbers, without spaces</p>
+						<p class="help-block"></p>
 					</div>
 				</div>
 
@@ -74,7 +73,7 @@
 					<div class="dropdown">
 						<button class="btn btn-success dropdown-toggle" type="button"
 							data-toggle="dropdown">
-							Dropdown Example <span class="caret"></span>
+							Roles <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
 							<li><a href="#">Admin</a></li>

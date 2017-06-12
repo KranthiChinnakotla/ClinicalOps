@@ -6,7 +6,7 @@ public class Users {
 	
 	private int user_id;
 	
-	private String name;
+	private String username;
 	
 	
 	private String email;
@@ -23,10 +23,10 @@ public class Users {
 		
 	}
 
-	public Users(int user_id, String name, String email, String password, String role) {
+	public Users(int user_id, String username, String email, String password, String role) {
 		super();
 		this.user_id = user_id;
-		this.name = name;
+		this.username = username;
 		this.email = email;
 		this.password = password;
 		this.role = role;
@@ -36,8 +36,8 @@ public class Users {
 		this.user_id = user_id;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String username) {
+		this.username = username;
 	}
 
 	public void setEmail(String email) {
@@ -51,6 +51,16 @@ public class Users {
 	public void setRole(String role) {
 		this.role = role;
 	}
+
+	@Override
+	public String toString() {
+		return "Users [user_id=" + user_id + ", username=" + username + ", email=" + email + ", password=" + password
+				+ ", role=" + role + "]";
+	}
+
+	
+	
+	
 	
 	
 }
