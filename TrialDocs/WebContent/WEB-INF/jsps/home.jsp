@@ -21,7 +21,8 @@
 </head>
 <body>
 	<div class="col-md-4 col-md-offset-4">
-		<form class="form-horizontal" action='${pageContext.request.contextPath}/usercreated' method="POST">
+		<form class="form-horizontal"
+			action='${pageContext.request.contextPath}/usercreated' method="POST">
 			<fieldset>
 				<div id="legend">
 					<legend class="">Register</legend>
@@ -68,18 +69,18 @@
 				</div>
 				<p class="help-block"></p>
 				<p class="help-block"></p>
-				<p class="help-block">Select a Role:</p>
 				<div class="control-group">
-					<div class="dropdown">
-						<button class="btn btn-success dropdown-toggle" type="button"
-							data-toggle="dropdown">
-							Roles <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<li><a href="#">Admin</a></li>
-							<li><a href="#">User</a></li>
-							<li><a href="#">Principal Investigator</a></li>
-						</ul>
+
+					<div class="form-group">
+						<label class="control-label  col-sm-2"
+							for="role">Select a Role</label>
+						<div class="col-sm-4 col-md-4">
+							<select id="role" name="role" class="form-control">
+								<option>Admin</option>
+								<option>User</option>
+								<option>Principal Investigator</option>
+							</select>
+						</div>
 					</div>
 				</div>
 				<p class="help-block"></p>

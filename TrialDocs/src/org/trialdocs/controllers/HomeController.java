@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.trialdocs.model.Users;
 import org.trialdocs.model.UsersDao;
@@ -14,6 +15,9 @@ import org.trialdocs.model.UsersDao;
 
 @Controller
 public class HomeController {
+	
+	@Autowired
+	private UsersDao userdao;
 		
 	@RequestMapping("/")
 	public String showHome(){
@@ -27,9 +31,12 @@ public class HomeController {
 		return "login";
 	}
 
+	//@RequestParam("name") String name,@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("role") String role
 	
 	@RequestMapping( value= "/usercreated", method= RequestMethod.POST)
 	public String createUser(Model model, Users users){	
+		System.out.println(users);
+	    userdao.createUser(users);	
 		return "usercreated";
 	}
 }

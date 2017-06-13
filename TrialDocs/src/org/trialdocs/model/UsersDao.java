@@ -5,6 +5,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -22,5 +23,11 @@ public class UsersDao {
 	
   public UsersDao(){
 	  System.out.println("The J2EE bean is added!");
+  }
+  
+  public boolean createUser(Users users){
+	  
+	  BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(users);
+	  return jdbc.update("insert into cops_users (name,email,password,role) values (:username, :email, :password, :role)", params) == 1;
   }
 }
