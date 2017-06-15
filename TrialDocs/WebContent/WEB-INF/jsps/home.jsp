@@ -72,13 +72,12 @@
 				<div class="control-group">
 
 					<div class="form-group">
-						<label class="control-label  col-sm-2"
-							for="role">Select a Role</label>
+						<label class="control-label  col-sm-4" for="role">Select a
+							Role</label>
 						<div class="col-sm-4 col-md-4">
 							<select id="role" name="role" class="form-control">
-								<option>Admin</option>
 								<option>User</option>
-								<option>Principal Investigator</option>
+								<option>Super User</option>
 							</select>
 						</div>
 					</div>
@@ -88,12 +87,16 @@
 					<!-- Button -->
 					<div class="controls">
 						<button class="btn btn-success" id="registerbutton">Register</button>
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						<button class="btn btn-success" id="loginbutton">Login</button>
+
 					</div>
 				</div>
 			</fieldset>
 		</form>
+		<br />
+		<div>
+			<button class="btn btn-success" id="loginbutton">Click here,
+				if you know who your are!</button>
+		</div>
 	</div>
 </body>
 </html>

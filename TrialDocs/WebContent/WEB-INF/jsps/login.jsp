@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="col-md-4 col-md-offset-4">
-<form class="form-horizontal" action='' method="POST">
+<form class="form-horizontal" action='${pageContext.request.contextPath}/upload' method="POST">
   <fieldset>
     <div id="legend">
       <legend class="">Login</legend>
