@@ -33,7 +33,14 @@
         <p class="help-block"></p>
       </div>
     </div>
- 
+ <div class="control-group">
+      <!-- -->
+      <div class="controls">
+        <p>First time users click here: <a href="mailto:prathyu1618@gmail.com,kranthi2@hotmail.com?Subject=Hello%20again" target="_top">Send Mail</a>
+        </p>
+        <p class="help-block"></p>
+      </div>
+    </div>
     
  
     <div class="control-group">

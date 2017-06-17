@@ -33,7 +33,7 @@ public class UsersDao {
 
 		BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(users);
 		return jdbc.update(
-				"insert into cops_users (name,email,password,role) values (:username, :email, :password, :role)",
+				"insert into cops_users (name,email,password,role,status) values (:username, :email, :password, :role,"+0+")",
 				params) == 1;
 	}
 
