@@ -11,12 +11,12 @@
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script>
-	$(document).ready(function() {
+	/*$(document).ready(function() {
 
 		$('#loginbutton').on('click', function() {
-			window.open('${pageContext.request.contextPath}/login');
+			window.open('${pageContext.request.contextPath}/');
 		});
-	});
+	});*/
 </script>
 </head>
 <body>
@@ -87,15 +87,18 @@
 					<!-- Button -->
 					<div class="controls">
 						<button class="btn btn-success" id="registerbutton">Register</button>
-
 					</div>
 				</div>
 			</fieldset>
 		</form>
 		<br />
+        <p>Click here to send an email for approval :<a href="mailto:someone@example.com?Subject=Hello%20again" target="_top">Send Mail</a></p>
+
 		<div>
-			<button class="btn btn-success" id="loginbutton">Click here,
-				if you know who your are!</button>
+		<form action="${pageContext.request.contextPath}/">
+		<button type= submit class="btn btn-success" id="loginbutton">Click here,to login</button>
+		</form>
+			
 		</div>
 	</div>
 </body>

@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="col-md-4 col-md-offset-4">
-<form class="form-horizontal" action='${pageContext.request.contextPath}/upload' method="POST">
+<form class="form-horizontal" action='${pageContext.request.contextPath}/mainpage' method="POST">
   <fieldset>
     <div id="legend">
       <legend class="">Login</legend>
@@ -33,21 +33,13 @@
         <p class="help-block"></p>
       </div>
     </div>
- <div class="control-group">
-      <!-- -->
-      <div class="controls">
-        <p>First time users click here: <a href="mailto:prathyu1618@gmail.com,kranthi2@hotmail.com?Subject=Hello%20again" target="_top">Send Mail</a>
-        </p>
-        <p class="help-block"></p>
-      </div>
-    </div>
-    
- 
+
     <div class="control-group">
       <!-- Button -->
       <div class="controls">
         <button class="btn btn-success">Login</button>
       </div>
+    <p class="help-block">New users :<a href="${pageContext.request.contextPath}/home">Register</a></p>
     </div>
   </fieldset>
   </form>
