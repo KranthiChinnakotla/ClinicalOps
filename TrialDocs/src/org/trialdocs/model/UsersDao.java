@@ -21,7 +21,7 @@ public class UsersDao {
 	private NamedParameterJdbcTemplate jdbc;
 
 	@Autowired
-	public void serDataSource(DataSource jdbc) {
+	public void setDataSource(DataSource jdbc) {
 		this.jdbc = new NamedParameterJdbcTemplate(jdbc);
 	}
 
@@ -63,5 +63,5 @@ public class UsersDao {
 			return null;
 		}
 
-	}
+	}	
 }
