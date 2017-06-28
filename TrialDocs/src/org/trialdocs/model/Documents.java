@@ -8,23 +8,36 @@ public class Documents {
 	private String email;
 	private InputStream inputStream;
 	private String fileName;
+	private String contenttype;
 
 	public Documents() {
 		super();
 	}
 
-	public Documents(String email,InputStream inputStream, String fileName) {
+	public Documents(String email,InputStream inputStream, String fileName,String contenttype) {
 		super();
 		this.email = email;
 		this.inputStream = inputStream;
 		this.fileName = fileName;
+		this.contenttype = contenttype;
 	}
+
+	
 
 	
 
 	@Override
 	public String toString() {
-		return "Documents [email=" + email + ", inputStream=" + inputStream + ", fileName=" + fileName + "]";
+		return "Documents [email=" + email + ", inputStream=" + inputStream + ", fileName=" + fileName + ", contentType="
+				+ contenttype + "]";
+	}
+
+	public String getContenttype() {
+		return contenttype;
+	}
+
+	public void setContenttype(String contenttype) {
+		this.contenttype = contenttype;
 	}
 
 	public String getEmail() {

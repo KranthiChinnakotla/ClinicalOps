@@ -30,9 +30,16 @@ public class DocumentsDao {
 	public boolean createDocument(Documents docs) {
 
 		BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(docs);
-		return jdbc.update("insert into file_upload (email,content,filename) values (:email,:inputStream,:fileName)",
+		return jdbc.update("insert into file_upload (email,content,filename,content_type) values (:email,:inputStream,:fileName,:contenttype)",
 				params) == 1;
 
+	}
+	
+	public boolean deleteDocument(String fileName){
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("fileName", fileName);
+		return jdbc.update("delete from file_upload where filename = :fileName", params) == 1;
+		
 	}
 
 	public List<Documents> getDocuments(String email) {
@@ -50,7 +57,7 @@ public class DocumentsDao {
 
 					Blob blob = rs.getBlob("content");
 					Documents document = new Documents(rs.getString("email"), blob.getBinaryStream(),
-							rs.getString("filename"));
+							rs.getString("filename"),rs.getString("content_type"));
 					return document;
 				}
 
@@ -75,7 +82,7 @@ public class DocumentsDao {
 					// TODO Auto-generated method stub
 					
 					Blob blob = rs.getBlob("content");
-					Documents document = new Documents(rs.getString("email"),blob.getBinaryStream(),rs.getString("filename"));
+					Documents document = new Documents(rs.getString("email"),blob.getBinaryStream(),rs.getString("filename"),rs.getString("content_type"));
 					return document;
 				}		
 			});

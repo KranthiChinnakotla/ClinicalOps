@@ -26,7 +26,8 @@
 				<p class="lead">This is a database to store all the clinical
 					trial documents.</p>
 
-				<form id="contact-form" method="post" action="${pageContext.request.contextPath}/connect"
+				<form id="contact-form" method="post"
+					action="${pageContext.request.contextPath}/connect"
 					enctype="multipart/form-data" role="form">
 
 					<div class="messages"></div>
@@ -106,9 +107,14 @@
 									<div class="help-block with-errors"></div>
 								</div>
 							</div>
+							<input type="hidden" name="email"
+								value="<%=request.getAttribute("email")%>"> <input
+								type="hidden" name="role"
+								value="<%=request.getAttribute("role")%>">
 							<div class="col-md-12">
-								<input type="file" name="file"> <input type="submit"
-									class="btn btn-success btn-send" value="Upload">
+								<input type="file" name="file" id="fileUpload"> <input
+									type="submit" class="btn btn-success btn-send" id="upload"
+									value="Upload">
 							</div>
 						</div>
 						<div class="row">
@@ -129,9 +135,23 @@
 		</div>
 
 	</div>
-
 	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 	<script
 		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('#upload').bind("click", function() {
+				var fileVal = $('#fileUpload').val();
+				if (fileVal == '') {
+					alert("Please upload file")
+					return false;
+				}else{
+					return true;
+				}
+				
+			});
+
+		});
+	</script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -29,10 +30,11 @@
 				</div>
 				<div class="control-group">
 					<!-- Username -->
-					<label class="control-label" for="username">Username</label>
+					<label class="control-label" for="username">Username *</label>
 					<div class="controls">
 						<input type="text" id="username" name="username" placeholder=""
-							class="input-xlarge">
+							class="input-xlarge" required="required"
+							data-error="Username is required">
 						<p class="help-block"></p>
 					</div>
 				</div>
@@ -42,8 +44,8 @@
 					<label class="control-label" for="email">E-mail</label>
 					<div class="controls">
 						<input type="text" id="email" name="email" placeholder=""
+							required="required" data-error="Email is required"
 							class="input-xlarge">
-						<p class="help-block">Please provide your E-mail</p>
 					</div>
 				</div>
 
@@ -52,7 +54,8 @@
 					<label class="control-label" for="password">Password</label>
 					<div class="controls">
 						<input type="password" id="password" name="password"
-							placeholder="" class="input-xlarge">
+							placeholder="" class="input-xlarge" pattern=".{4,}" required
+							title="4 characters minimum">
 						<p class="help-block">Password should be at least 4 characters</p>
 					</div>
 				</div>
@@ -63,10 +66,18 @@
 						(Confirm)</label>
 					<div class="controls">
 						<input type="password" id="password_confirm"
-							name="password_confirm" placeholder="" class="input-xlarge">
+							name="password_confirm" placeholder="" class="input-xlarge"
+							pattern=".{4,}" required title="4 characters minimum">
 						<p class="help-block">Please confirm password</p>
 					</div>
 				</div>
+				<c:set var="nopass" scope="session"
+					value="<%=session.getAttribute(\"nopass\")%>"></c:set>
+				<c:if test="${nopass != null }">
+					<p class="help-block">
+						<c:out value="${nopass }" />
+					</p>
+				</c:if>
 				<p class="help-block"></p>
 				<p class="help-block"></p>
 				<div class="control-group">
@@ -76,8 +87,8 @@
 							Role</label>
 						<div class="col-sm-4 col-md-4">
 							<select id="role" name="role" class="form-control">
-								<option>User</option>
-								<option>Super User</option>
+								<option>Reviewer</option>
+								<option>Modifier</option>
 							</select>
 						</div>
 					</div>
@@ -92,13 +103,11 @@
 			</fieldset>
 		</form>
 		<br />
-        <p>Click here to send an email for approval :<a href="mailto:someone@example.com?Subject=Hello%20again" target="_top">Send Mail</a></p>
-
 		<div>
-		<form action="${pageContext.request.contextPath}/">
-		<button type= submit class="btn btn-success" id="loginbutton">Click here,to login</button>
-		</form>
-			
+			<form action="${pageContext.request.contextPath}/">
+				<button type=submit class="btn btn-success" id="loginbutton">Click
+					here,to login</button>
+			</form>
 		</div>
 	</div>
 </body>

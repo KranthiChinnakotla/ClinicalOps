@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.Part;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.trialdocs.model.Documents;
 import org.trialdocs.model.DocumentsDao;
 import org.trialdocs.model.Users;
@@ -41,7 +44,7 @@ public class HomeController extends HttpServlet {
 
 	@Autowired
 	private UsersDao userdao;
-	
+
 	@Autowired
 	private ServletContext context;
 
@@ -58,9 +61,20 @@ public class HomeController extends HttpServlet {
 		return "login";
 	}
 
-	@RequestMapping("/home")
-	public String showLogin() {
-		return "home";
+	@RequestMapping(value = "/home", method = RequestMethod.POST)
+	public ModelAndView showLogin(@RequestParam("adminid") String adminid, @RequestParam("password") String password) {
+
+		if (adminid.equals("AmpelAdmin") && password.equals("ClinOps2017")) {
+			ModelAndView mv = new ModelAndView("home");
+			return mv;
+		} else {
+
+			ModelAndView mv = new ModelAndView("admin");
+			Map<String,Object> model = mv.getModel();
+			model.put("admincred", "Invalid admin credentials !");
+			return mv;
+		}
+
 	}
 
 	// @RequestParam("name") String name,@RequestParam("email") String
@@ -68,35 +82,72 @@ public class HomeController extends HttpServlet {
 	// String role
 
 	@RequestMapping(value = "/usercreated", method = RequestMethod.POST)
-	public String createUser(Model model, Users users) {
-		System.out.println(users);
-		userdao.createUser(users);
-		return "login";
+	public String createUser(HttpServletRequest request, Users users, @RequestParam("password") String password,
+			@RequestParam("password_confirm") String pass_confirm) {
+
+		if (password.equals(pass_confirm)) {
+			System.out.println(users);
+			userdao.createUser(users);
+			return "login";
+		} else {
+			request.setAttribute("nopass", "The password and confirm password are not the same");
+			return "home";
+		}
+
 	}
 
 	@RequestMapping(value = "/upload")
-	public String authorizeUser() {
+	public ModelAndView authorizeUser(@RequestParam("email") String email, @RequestParam("role") String role) {
 
-		return "upload";
+		ModelAndView mv = new ModelAndView("upload");
+		Map<String, Object> mod = mv.getModel();
+		mod.put("email", email);
+		mod.put("role", role);
+		return mv;
 
 	}
 
-	@RequestMapping(value = "/mainpage", method = RequestMethod.POST)
-	public String postMainPage(Model model, @RequestParam("email") String email,
-			@RequestParam("password") String password) {
+	@RequestMapping(value = "/mainpage", method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView postMainPage(Model model, HttpSession session, HttpServletRequest request,
+			@RequestParam("email") String email, @RequestParam("password") String password,
+			@RequestParam("role") String role) {
 
 		if (userdao.getUser(email, password) != null) {
-			return "mainpage";
+			Users user = userdao.getUser(email, password);
+			ModelAndView mv = new ModelAndView("mainpage");
+			Map<String, Object> mod = mv.getModel();
+			mod.put("email", user.getEmail());
+			mod.put("role", user.getRole());
+			return mv;
+		} else if (userdao.getBackuser(email, role) != null) {
+			Users user = userdao.getBackuser(email, role);
+			ModelAndView mv = new ModelAndView("mainpage");
+			Map<String, Object> mod = mv.getModel();
+			mod.put("email", user.getEmail());
+			mod.put("role", user.getRole());
+			return mv;
 		} else {
-			return "login";
+
+			request.setAttribute("usercred", "Invalid UserName and/or Password");
+			// session.setAttribute("usercred", "Invalid UserName and/or
+			// Password");
+			ModelAndView mv = new ModelAndView("login");
+			return mv;
 		}
 
 	}
 
 	@RequestMapping(value = "/connect", method = RequestMethod.POST)
-	public String uploadDocument(HttpServletRequest request, HttpSession session) throws IOException, ServletException {
+	public ModelAndView uploadDocument(HttpServletRequest request, HttpSession session,
+			@RequestParam("name") String name, @RequestParam("surname") String surname,
+			@RequestParam("sitenumber") String sitenumber, @RequestParam("date") String date,
+			@RequestParam("version") String version, @RequestParam("email") String email,
+			@RequestParam("role") String role) throws IOException, ServletException {
 
 		InputStream inputStream = null;
+		String[] emailPart = email.split("\\.");
+		String emailPart1 = emailPart[0];
+		String filename = name + surname + sitenumber + date + version + emailPart1 ;
 		Part filePart = request.getPart("file");
 		if (filePart != null) {
 			System.out.println(filePart.getName());
@@ -106,10 +157,36 @@ public class HomeController extends HttpServlet {
 
 		}
 
-		Documents docs = new Documents("k@k.com", inputStream, "filename");
+		Documents docs = new Documents(email, inputStream, filename,filePart.getContentType());
 		documentDao.createDocument(docs);
-		session.setAttribute("success", "Succesfully uploaded the data in to MySql");
-		return "mainpage";
+		ModelAndView mv = new ModelAndView("success");
+		Map<String, Object> model = mv.getModel();
+		model.put("success", "Succesfully uploaded the file !");
+		model.put("email", email);
+		model.put("role", role);
+		// request.setAttribute("success", "Succesfully uploaded the file !");
+		return mv;
+	}
+
+	@RequestMapping("/remove")
+	public ModelAndView deleteDocument(@RequestParam("filename") String filename, @RequestParam("email") String email,
+			@RequestParam("role") String role) {
+		if (documentDao.deleteDocument(filename)) {
+			ModelAndView mv = new ModelAndView("success");
+			Map<String, Object> model = mv.getModel();
+			model.put("success", "Succesfully deleted the file!");
+			model.put("email", email);
+			model.put("role", role);
+			return mv;
+		} else {
+			ModelAndView mv = new ModelAndView("success");
+			Map<String, Object> model = mv.getModel();
+			model.put("success", "Unable to delete the file, please try again after sometime.");
+			model.put("email", email);
+			model.put("role", role);
+			return mv;
+		}
+
 	}
 
 	@RequestMapping("/download")
@@ -118,13 +195,22 @@ public class HomeController extends HttpServlet {
 
 		try {
 			Documents document = documentDao.getSingleDocument(filename);
-			System.out.println("The file length is : " + document.getInputStream().available());
-			//ServletContext context = getServletContext();
+			System.out.println("The file length is : " + document.getInputStream().available()+document.getContenttype());
+			// ServletContext context = getServletContext();
 			String mimeType = context.getMimeType(filename);
 			if (mimeType == null) {
-				mimeType = "application/octet-stream";
+				//mimeType = "application/octet-stream";
+				mimeType = document.getContenttype();
+				
 			}
 
+			if(mimeType.contains("pdf")){
+				filename = filename + ".pdf";
+				
+			}else if(mimeType.contains("word")){
+				filename = filename + ".docx";
+				
+			}
 			response.setContentType(mimeType);
 			response.setContentLength(document.getInputStream().available());
 			String headerKey = "Content-Disposition";
@@ -147,7 +233,12 @@ public class HomeController extends HttpServlet {
 			ex.printStackTrace();
 			response.getWriter().print("IO Error: " + ex.getMessage());
 		}
-		
-		
+
+	}
+
+	@RequestMapping("/admin")
+	public ModelAndView adminPage() {
+		ModelAndView mv = new ModelAndView("admin");
+		return mv;
 	}
 }

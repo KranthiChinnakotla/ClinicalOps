@@ -64,4 +64,32 @@ public class UsersDao {
 		}
 
 	}	
+	
+	public Users getBackuser(String email, String role) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("email", email);
+		params.addValue("role", role);
+		try {
+			Users user = jdbc.queryForObject("select * from cops_users where email = :email and role = :role",
+					params, new RowMapper<Users>() {
+
+						@Override
+						public Users mapRow(ResultSet rs, int rowNum) throws SQLException {
+							// TODO Auto-generated method stub
+
+							Users user = new Users();
+							user.setEmail(rs.getString("email"));
+							user.setUsername(rs.getString("name"));
+							user.setRole(rs.getString("role"));
+							return user;
+						}
+
+					});
+			return user;
+		} catch (Exception e) {
+
+			return null;
+		}
+
+	}	
 }
