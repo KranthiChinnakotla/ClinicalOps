@@ -56,7 +56,7 @@
 						<button class="btn btn-success">Login</button>
 					</div>
 					<p class="help-block">
-						New users :<a href="${pageContext.request.contextPath}/admin">Register</a>
+						New users :<a href="${pageContext.request.contextPath}/admin?action=register">Register</a>
 					</p>
 				</div>
 			</fieldset>

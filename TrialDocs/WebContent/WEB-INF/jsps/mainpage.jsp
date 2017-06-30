@@ -56,5 +56,10 @@
 			</div>
 		</c:forEach>
 	</div>
+	<div class="well well-sm">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a
+			href="${pageContext.request.contextPath }/admin?action=logs">View logs : Admin Only</a>
+
+	</div>
 </body>
 </html>

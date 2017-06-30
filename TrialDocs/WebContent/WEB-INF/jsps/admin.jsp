@@ -46,6 +46,7 @@
 						</p>
 
 					</c:if>
+					<input type="hidden" name="action" value= <%= request.getAttribute("action") %> >
 				</div>
 				<div class="control-group">
 					<div class="controls">

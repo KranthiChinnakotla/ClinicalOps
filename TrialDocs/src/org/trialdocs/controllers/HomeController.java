@@ -1,15 +1,16 @@
 package org.trialdocs.controllers;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.util.Calendar;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -33,6 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.trialdocs.model.Documents;
 import org.trialdocs.model.DocumentsDao;
+import org.trialdocs.model.Logs;
+import org.trialdocs.model.LogsDao;
 import org.trialdocs.model.Users;
 import org.trialdocs.model.UsersDao;
 
@@ -50,6 +53,9 @@ public class HomeController extends HttpServlet {
 
 	@Autowired
 	private DocumentsDao documentDao;
+	
+	@Autowired
+	private LogsDao logsDao;
 
 	@Autowired
 	public void setDataSource(DataSource jdbc) {
@@ -62,11 +68,17 @@ public class HomeController extends HttpServlet {
 	}
 
 	@RequestMapping(value = "/home", method = RequestMethod.POST)
-	public ModelAndView showLogin(@RequestParam("adminid") String adminid, @RequestParam("password") String password) {
+	public ModelAndView showLogin(@RequestParam("adminid") String adminid, @RequestParam("password") String password, @RequestParam(value = "action", required=false) String action) {
 
 		if (adminid.equals("AmpelAdmin") && password.equals("ClinOps2017")) {
-			ModelAndView mv = new ModelAndView("home");
-			return mv;
+			if(action.equals("register")){
+				ModelAndView mv = new ModelAndView("home");
+				return mv;
+			}else{
+				ModelAndView mv = new ModelAndView("logs");
+				return mv;
+			}
+		
 		} else {
 
 			ModelAndView mv = new ModelAndView("admin");
@@ -93,6 +105,8 @@ public class HomeController extends HttpServlet {
 			request.setAttribute("nopass", "The password and confirm password are not the same");
 			return "home";
 		}
+		
+
 
 	}
 
@@ -112,19 +126,29 @@ public class HomeController extends HttpServlet {
 			@RequestParam("email") String email, @RequestParam("password") String password,
 			@RequestParam("role") String role) {
 
-		if (userdao.getUser(email, password) != null) {
-			Users user = userdao.getUser(email, password);
+		Users user = userdao.getUser(email, password);
+		if (user != null) {
+			// Log the date and time when the user sign in and sign out.
+			DateFormat dateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+			Date date = new Date();
+			String logMessage = "The user "+user.getUsername()+" logged in at :"+ dateTimeFormat.format(date);
+			Logs logs = new Logs(email,user.getRole(),logMessage,dateFormat.format(date));
+			
+			//Creating logs in MySql database.
+			logsDao.createLogs(logs);
+						
 			ModelAndView mv = new ModelAndView("mainpage");
 			Map<String, Object> mod = mv.getModel();
 			mod.put("email", user.getEmail());
-			mod.put("role", user.getRole());
+			mod.put("role", user.getRole());	
 			return mv;
 		} else if (userdao.getBackuser(email, role) != null) {
-			Users user = userdao.getBackuser(email, role);
+			Users gBuser = userdao.getBackuser(email, role);
 			ModelAndView mv = new ModelAndView("mainpage");
 			Map<String, Object> mod = mv.getModel();
-			mod.put("email", user.getEmail());
-			mod.put("role", user.getRole());
+			mod.put("email", gBuser.getEmail());
+			mod.put("role", gBuser.getRole());
 			return mv;
 		} else {
 
@@ -188,6 +212,33 @@ public class HomeController extends HttpServlet {
 		}
 
 	}
+	
+	@RequestMapping("/downloadLogs")
+	public void downloadLogs(HttpServletRequest request, HttpServletResponse response){
+		
+		String fileName = "logs.txt";
+		String fileType = "application/octet-stream";	
+		response.setContentType(fileType);
+		response.setHeader("Content-disposition", "attachment; filename="+fileName);
+		File myFile = new File(fileName);
+		
+		try {
+			OutputStream out = response.getOutputStream();
+			FileInputStream in = new FileInputStream(myFile);
+			byte[] buffer = new byte[4096];
+			int length;
+			
+			while((length = in.read(buffer)) != -1){
+				out.write(buffer, 0, length);
+			}
+			
+			in.close();
+			out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	@RequestMapping("/download")
 	public void downloadDocument(HttpServletRequest request, HttpServletResponse response,
@@ -237,8 +288,10 @@ public class HomeController extends HttpServlet {
 	}
 
 	@RequestMapping("/admin")
-	public ModelAndView adminPage() {
+	public ModelAndView adminPage(@RequestParam(value = "action", required=true) String action) {
 		ModelAndView mv = new ModelAndView("admin");
+		Map<String, Object> model = mv.getModel();
+		model.put("action", action);
 		return mv;
 	}
 }
